@@ -1,6 +1,7 @@
-import { useFieldArray, useForm } from 'react-hook-form';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import Field from '../components/Field';
 import FieldSet from '../components/FieldSet';
+import NumberInput from '../components/NumberInput';
 
 const RegistrationForm = () => {
   const {
@@ -23,10 +24,20 @@ const RegistrationForm = () => {
     <div className="flex flex-col justify-center items-center">
       <form onSubmit={handleSubmit(submitForm)}>
         <FieldSet label="Enter Your Basic Details">
+          <Field label="Picture" error={errors.picture}>
+            <input
+              {...register('picture', {
+                required: 'Picture is required',
+              })}
+              type="file"
+              id="picture"
+              name="picture"
+            />
+          </Field>
           <Field label="Email" error={errors.email}>
             <input
               {...register('email', {
-                required: 'Email is required.',
+                required: true,
               })}
               className={`p-2 border box-border w-[300px] rounded-md ${
                 errors.email ? 'border-red-500' : 'border-gray-200'
@@ -40,7 +51,7 @@ const RegistrationForm = () => {
           <Field label="Password" error={errors.password}>
             <input
               {...register('password', {
-                required: 'Password is required.',
+                required: true,
                 minLength: {
                   value: 8,
                   message: 'Your password must be at least 8 characters.',
@@ -59,7 +70,7 @@ const RegistrationForm = () => {
           <Field label="Full Name" error={errors.fname}>
             <input
               {...register('fname', {
-                required: 'Full Name is required.',
+                required: true,
               })}
               className={`p-2 border box-border w-[300px] rounded-md ${
                 errors.fname ? 'border-red-500' : 'border-gray-200'
@@ -72,12 +83,33 @@ const RegistrationForm = () => {
           </Field>
 
           <Field label="Age" error={errors.age}>
-            
-                <input
+            <Controller
+              name="age"
+              control={control}
+              defaultValue={0}
+              // render={({ field: { ref, ...field } }) => ()}
+              render={({ field }) => (
+                <NumberInput
+                  {...register('age', { required: true })}
                   id="age"
                   className={`p-2 border box-border w-full rounded-md ${
                     errors.age ? 'border-red-500' : 'border-gray-200'
                   }`}
+                  placeholder="Your Age"
+                  {...field}
+                />
+              )}
+              rules={{
+                required: true,
+                min: {
+                  value: 18,
+                  message: 'Age must be 18!!!',
+                },
+                max: {
+                  value: 99,
+                  message: 'Age must be between 18 and 99 years old.',
+                },
+              }}
             />
           </Field>
         </FieldSet>
